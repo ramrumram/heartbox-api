@@ -2,8 +2,9 @@
 
 use \Jacwright\RestServer\RestException;
 
-include("MysqlClass.php");
-include("PestJSON.php");
+include_once("MysqlClass.php");
+include_once("PestJSON.php");
+include_once("functions.php");
 
 class TestController extends DB
 {
@@ -14,9 +15,6 @@ class TestController extends DB
      */
     public function test()
     {
-
-
-
 
        return array("success" => "Logged in " );
     }
@@ -29,77 +27,100 @@ class TestController extends DB
      */
     public function login()
     {
+      //params email,password
+      extract($_POST);
+  	 $sql = 'select id from users where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
 
-	$sql = "select * from users;";
+  	if ($result=mysqli_query($this->link,$sql))
+  	  {
 
-	if ($result=mysqli_query($this->link,$sql))
-	  {
-	  while ($obj=mysqli_fetch_object($result))
-	    {
-	    printf("%s \n",$obj->user_email);
-	    }
+    	  if ($obj=mysqli_fetch_object($result))
+
+    	    {
+              return array("uid" => $obj->id);
+    	    } else {
+            throw new RestException(401, "Wrong credentials!");
+          }
 
 
-	}
+  	}
 
-        $username = $_POST['username'];
-        $password = $_POST['password']; //@todo remove since it is not needed anywhere
-        return array("success" => "Logged in " . $password);
-    }
-
-    /**
-     * Logs in a user with the given username and password POSTed. Though true
-     * REST doesn't believe in sessions, it is often desirable for an AJAX server.
-     *
-     * @url POST /log
-     */
-    public function log()
-    {
-
-       $sql = 'INSERT INTO log (description) VALUES ("'.$_POST['description'].'");';
-      if(mysqli_query($this->link,$sql)) {
-        return array("success" => "data saved");
-      }else {
-        throw new RestException(401, "Error saving data");
-      }
     }
 
 
     /**
-     * Logs in a user with the given username and password POSTed. Though true
-     * REST doesn't believe in sessions, it is often desirable for an AJAX server.
      *
      * @url POST /password
      */
     public function changepassword()
     {
-
+      //params uid,cpassword,password,
        extract ($_POST);
        //$password = ;
-	     $sql = 'select from users where uid = '".$uid."' and password ="'.md5($password).'"';
+	      $sql = 'select email from users where `id` = "'.$uid.'" and `password` ="'.md5($cpassword).'"';
 
     	if ($result=mysqli_query($this->link,$sql))
     	  {
-    	  while ($obj=mysqli_fetch_object($result))
+
+    	  if ($obj=mysqli_fetch_object($result))
     	    {
-    	          $sql = 'update users set password ="'.md5($password).'" where uid = '".$uid."'';
+    	          $sql = 'update users set `password` ="'.md5($password).'" where id = "'.$uid.'"';
                 if(mysqli_query($this->link,$sql)) {
-                  return array("success" => "password changed");
+                  return array("success" => "Password changed");
                 }else {
-                  echo $sql;
+                //  echo $sql;
                   throw new RestException(401, "Error saving data");
                 }
-    	    }
+    	    } else {
+            throw new RestException(401, "Wrong current password!");
+          }
 
 
-    	}
+    	} else {
+        throw new RestException(401, "Error in connection!");
+      }
 
 
     }
 
+
+    /**
+     *
+     * @url POST /forgot
+     */
+    public function forgotpassword()
+    {
+      //params email
+       extract ($_POST);
+
+
+       //$password = ;
+	      $sql = 'select id from users where `email` = "'.$email.'"';
+
+    	if ($result=mysqli_query($this->link,$sql))
+    	  {
+
+    	  if ($obj=mysqli_fetch_object($result))
+    	    {
+              $rand = random_string(8);
+              echo $rand;
+
+               return array("status" => "Temporary password has been sent to your email.");
+
+    	    } else {
+            throw new RestException(401, "Email doesnot exists!");
+          }
+
+
+    	} else {
+        throw new RestException(401, "Error in connection!");
+      }
+
+
+    }
+
+
   /**
-     * Logs in a user with the given username and password POSTed. Though true
-     * REST doesn't believe in sessions, it is often desirable for an AJAX server.
      *
      * @url POST /history
      */
@@ -129,7 +150,6 @@ class TestController extends DB
               if(mysqli_query($this->link,$sql)) {
                 return array("success" => "data saved");
               }else {
-                echo $sql;
                 throw new RestException(401, "Error saving data");
               }
 
