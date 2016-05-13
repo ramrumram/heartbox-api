@@ -9,7 +9,7 @@ include_once("functions.php");
 class VenuesController extends DB
 {
 
-  
+
 
   /**
     *
@@ -80,10 +80,15 @@ class VenuesController extends DB
               $cat = $venue['categories'][0]['shortName'];
               //just save it in log for ref
             //  $this->log("UID :".$uid. " LL : ".$ll);
+              $pf = $venue["categories"][0]["icon"]["prefix"];
+              $sf = $venue["categories"][0]["icon"]["suffix"];
+              $timage = $pf."bg_32".$sf;
 
-              $sql = 'INSERT INTO history (`id`, `venue_name`, `category`, `city`, `uid`, `ll`) VALUES
-                      ("'.$name.'","'.$loc.'","'.$cat.'","'.$city.'","'.$uid.'","'.$ll.'");';
+              $sql = 'INSERT INTO history (`id`, `venue_name`, `category`, `city`, `uid`, `ll`,`cat_img`) VALUES
+                      ("'.$name.'","'.$loc.'","'.$cat.'","'.$city.'","'.$uid.'","'.$ll.'","'.$timage.'");';
+                      echo $sql;
               if(mysqli_query($this->link,$sql)) {
+
                 return array("success" => "data saved");
               }else {
                 throw new RestException(401, "Error saving data");

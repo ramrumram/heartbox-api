@@ -42,6 +42,8 @@ class TestController extends DB
     {
       //params email,password
       extract($_POST);
+      $email = trim($email);
+      $password = trim($password);
   	 $sql = 'select id from users where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
 
   	if ($result=mysqli_query($this->link,$sql))
