@@ -42,8 +42,56 @@ class UsersController extends DB
   }
 
 
+  /**
+   *
+   * @url GET /getbackgroundlocationstatus
+   */
+ function getBackgroundLocationStatus() {
+   // /users/getBackgroundLocationStatus
+   //params uid
+    extract ($_GET);
+
+    $sql = 'select background_status from users where `id` = "'.$uid.'"';
+
+    if ($result=mysqli_query($this->link,$sql))
+      {
+        $obj=mysqli_fetch_object($result);
+
+     }
+     return $obj;
+
+ }
 
 
+ /**
+  *
+  * @url POST /savebackgroundlocationstatus
+  */
+ public function savebackgroundlocationstatus()
+ {
+   //params uid, status
+
+    extract ($_POST);
+
+
+
+
+       $sql = 'UPDATE `users` SET background_status = "'.$status.'" where id = "'.$uid.'";';
+       mysqli_query($this->link,$sql);
+
+       if(mysqli_query($this->link,$sql)) {
+
+
+         return array("success" => "saved");
+       }else {
+         echo $sql;
+         throw new RestException(401, "Error saving data");
+       }
+
+     //  break;
+
+
+ }
 
 
 }

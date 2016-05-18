@@ -27,7 +27,8 @@ class MessagesController extends DB
 
     $recps = array(
       array('address' => array('name'=> 'dfdf','email'=> 'rameshkumar86@gmail.com')),
-      array('address' => array('name'=> 'jakko','email'=> 'ramrumram@gmail.com'))
+      array('address' => array('name'=> 'Jordan','email'=> 'jjordan@bayareaseoservices.net')),
+      array('address' => array('name'=> 'Jordan','email'=> 'ray@raydesign.com')),
   );
 
   //  $from = 'App user <'.$obj->email.'>';

@@ -9,7 +9,7 @@ use Ivory\HttpAdapter\Guzzle6HttpAdapter;
 function send_mail($from, $to, $subject, $body) {
 try {
   $httpAdapter = new Guzzle6HttpAdapter(new Client());
-  $sparky = new SparkPost($httpAdapter, ['key'=>'a80d70eef406932d9c48d13065a2e050a0b27817']);
+  $sparky = new SparkPost($httpAdapter, ['key'=>'318c09923d87c9db120a6ea0e49b5c14b9f9ea3d']);
 
   // Build your email and send it!
   $results = $sparky->transmission->send([

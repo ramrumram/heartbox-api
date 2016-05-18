@@ -5,7 +5,7 @@ use \Jacwright\RestServer\RestException;
 include_once("MysqlClass.php");
 include_once("PestJSON.php");
 include_once("functions.php");
-
+include_once("../mailer.php");
 class TestController extends DB
 {
     /**
@@ -44,7 +44,7 @@ class TestController extends DB
       extract($_POST);
       $email = trim($email);
       $password = trim($password);
-  	 $sql = 'select id from users where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
+  	 $sql = 'select id, background_status from users where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
 
   	if ($result=mysqli_query($this->link,$sql))
   	  {
@@ -52,8 +52,9 @@ class TestController extends DB
     	  if ($obj=mysqli_fetch_object($result))
 
     	    {
-              return array("uid" => $obj->id);
+              return array("uid" => $obj->id, "background_status" => $obj->background_status);
     	    } else {
+            
             throw new RestException(401, "Wrong credentials!");
           }
 
@@ -118,12 +119,34 @@ class TestController extends DB
     	  if ($obj=mysqli_fetch_object($result))
     	    {
               $rand = random_string(8);
-              echo $rand;
 
-               return array("status" => "Temporary password has been sent to your email.");
+              $sql1 = 'update users set `password` ="'.md5($rand).'" where email = "'.$email.'"';
+              if(mysqli_query($this->link,$sql1)) {
+                $recps = array(
+                  array('address' => array('name'=> $obj->fname,'email'=> $email)),
+              );
+
+              //  $from = 'App user <'.$obj->email.'>';
+                $from = 'App user <from@sparkpostbox.com>';
+
+                $subject = "Reset password";
+                $body = "Your temporary password for Heartboxx has been set as ".$rand;
+
+                send_mail($from, $recps, $subject, $body);
+
+                   return array("status" => "New password has been sent to your email.");
+              }else {
+              //  echo $sql;
+                throw new RestException(401, "Error saving data");
+              }
+
+
+
+
 
     	    } else {
-            throw new RestException(401, "Email doesnot exists!");
+              return array("status" => "Email does not exists!");
+            //throw new RestException(401, "Email does not exists!");
           }
 
 
@@ -135,6 +158,29 @@ class TestController extends DB
     }
 
 
+
+
+
+        /**
+         *
+         * @url GET /getuser/$uid
+         */
+        public function getuser($uid=null)
+        {
+          //params uid, to, subject , message
+
+          $sql = 'select * from users where `id` = "'.$uid.'"';
+
+         if ($result=mysqli_query($this->link,$sql))
+           {
+
+             $obj=mysqli_fetch_object($result);
+
+               return array('data' => $obj);
+         } else {
+           throw new RestException(401, "Error fetching data!");
+         }
+        }
 
 
 
@@ -156,6 +202,7 @@ class TestController extends DB
                   `fname` = "'.$fname.'",
                   `lname` = "'.$lname.'",
                   `gender` = "'.$gender.'",
+                  `phone` = "'.$phone.'",
                   `city` = "'.$city.'",
                   `bio` = "'.$bio.'"
                    WHERE `users`.`id` = "'.$uid.'";';

@@ -1,12 +1,12 @@
 <?php
 
       include_once("api/MysqlClass.php");
+      // params############## uid, F_ILES['file']
 
-      $mysql = new DB();
-      print_r($_FILES);
-      $ser = addslashes(serialize($_FILES));
+    //  $mysql = new DB();
+//      $ser = addslashes(serialize($_FILES));
 
-
+/*
       $sql = 'INSERT INTO log (description) VALUES ("'.$ser.'");';
       if(mysqli_query($mysql->link,$sql)) {
       //  json_encode([
@@ -19,11 +19,11 @@
       }
 
 
-
+*/
       $target_dir = "uploads/profiles";
+      extract($_POST);
 
-
-      $target_dir = $target_dir . "/" . ($_FILES["file"]["name"]);
+      $target_dir = $target_dir . "/" . $uid. ".jpg";
       if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir))
       {
       echo json_encode([
