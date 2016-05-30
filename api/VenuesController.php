@@ -65,14 +65,21 @@ class VenuesController extends DB
       $uid = $_POST['uid'];
     	$pest = new PestJSON('https://api.foursquare.com');
     	// Retrieve and iterate over the list of all Users
-    	$locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&v='.date('Ymd'));
-    //  print_r ($locs);
+
+
+    	$locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&radius=5&categoryId=4d4b7104d754a06370d81259,4d4b7105d754a06374d81259,4d4b7105d754a06378d81259&v='.date('Ymd'));
+
+      //testing url to allow all venues
+    //  $locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&v='.date('Ymd'));
+
       if ($locs['response']['venues']) {
+
+
           foreach ($locs['response']['venues'] as $key => $venue) {
             //echo $venue['categories'][0]['name'];
             //skip this non-prominent places
-          // if (in_array( $venue['categories'][0]['name'],  array('Parking','City','County','Country','Neighborhood','State','Town','Village','Road','Street','Intersection')) ) {
-            // continue;
+           //if (in_array( $venue['categories'][0]['name'],  array('Parking','City','County','Country','Neighborhood','State','Town','Village','Road','Street','Intersection','Building','Acupuncturist','Racetrack','Theme Park')) ) {
+             //continue;
            //} else
 
             {
@@ -85,9 +92,10 @@ class VenuesController extends DB
                   //the same place is inserted already for today
                   //so do nothing and return since inserting only one record
                   return ;
-                //  return array("status" => "null");
 
-               }else {
+               }else
+
+                {
 
                  //inser the records
 
@@ -95,21 +103,22 @@ class VenuesController extends DB
                  //take short name
                  $cat = $venue['categories'][0]['shortName'];
                  //just save it in log for ref
-               //  $this->log("UID :".$uid. " LL : ".$ll);
+
                  $pf = $venue["categories"][0]["icon"]["prefix"];
                  $sf = $venue["categories"][0]["icon"]["suffix"];
                  $timage = $pf."bg_32".$sf;
 
 
+
                  $sql = 'INSERT INTO history (`id`, `venue_name`, `category`, `city`, `uid`, `ll`,`cat_img`) VALUES
                          ("'.$name.'","'.$loc.'","'.$cat.'","'.$city.'","'.$uid.'","'.$ll.'","'.$timage.'");';
-                         echo $sql;
                  if(mysqli_query($this->link,$sql)) {
 
                    return array("success" => "data saved");
                  }else {
                    throw new RestException(401, "Error saving data");
                  }
+
 
 
 
