@@ -1,4 +1,6 @@
 <?php
+use \Jacwright\RestServer\RestException;
+
 include_once("MysqlClass.php");
 include_once("PestJSON.php");
 include_once("functions.php");
@@ -18,21 +20,22 @@ class MessagesController extends DB
 
      $sql = 'select * from users where `id` = "'.$uid.'"';
 
+
      if ($result=mysqli_query($this->link,$sql))
        {
          $obj=mysqli_fetch_object($result);
 
-     }
+       }
 
 
     $recps = array(
       array('address' => array('name'=> 'dfdf','email'=> 'rameshkumar86@gmail.com')),
-      array('address' => array('name'=> 'Jordan','email'=> 'jjordan@bayareaseoservices.net')),
+        array('address' => array('name'=> 'Jordan','email'=> 'jjordan@bayareaseoservices.net')),
       array('address' => array('name'=> 'Jordan','email'=> 'ray@raydesign.com')),
   );
 
   //  $from = 'App user <'.$obj->email.'>';
-    $from = 'App user <from@sparkpostbox.com>';
+    $from = 'Heartboxx App user <from@sparkpostbox.com>';
 
     $subject = ($subject)?$subject:"no subject";
     $body = $message;
@@ -42,13 +45,15 @@ class MessagesController extends DB
 
 
 
-        //just save it in log for ref
-      //  $this->log("UID :".$uid. " LL : ".$ll);
+
+      //this table will be revampled completely if approving suggestoins comes
+
+      $sql = 'INSERT INTO `suggestions` (`uid`, `no_of_sug`) VALUES ( "'.$uid.'",  1)
+        ON DUPLICATE KEY UPDATE `no_of_sug` = `no_of_sug` + 1';
+        mysqli_query($this->link,$sql);
+
 
       $sql = 'INSERT INTO `messages` (`to`, `subject`, `message`, `from_uid`) VALUES ("'.$to.'", "'.$subject.'", "'.$message.'", "'.$uid.'");';
-
-
-
 
         if(mysqli_query($this->link,$sql)) {
 
@@ -68,29 +73,52 @@ class MessagesController extends DB
 
     /**
      *
-     * @url GET /fetch/$uid
+     * @url GET /getsugcnt/$uid
      */
-    public function fetch($uid=null)
+    public function getsugcnt($uid=null)
     {
-      //params uid, to, subject , message
+      //messages/getsugcnt/$uid
+      //params uid
 
-      $sql = 'select * from messages where `from_uid` = "'.$uid.'" ORDER BY created_at DESC';
+      $sql = 'select `no_of_sug` from suggestions where `uid` = "'.$uid.'"';
 
      if ($result=mysqli_query($this->link,$sql))
        {
-
-         while ($obj=mysqli_fetch_object($result))
-           {
-               $date = date("d-m h:i A", strtotime($obj->created_at));
-               $messages [] = array('to' => $obj->to, 'subject' => $obj->subject, 'message' => $obj->message,
-                                'date' => $date, 'id' => $obj->id);
-           }
-
-           return array('data' => $messages);
+          $obj=mysqli_fetch_object($result);
+           return array('data' => $obj->no_of_sug);
      } else {
        throw new RestException(401, "Error fetching data!");
      }
     }
+
+
+
+        /**
+         *
+         * @url GET /fetch/$uid
+         */
+        public function fetch($uid=null)
+        {
+          //params uid, to, subject , message
+
+          $sql = 'select * from messages where `from_uid` = "'.$uid.'" ORDER BY created_at DESC';
+
+          if ($result=mysqli_query($this->link,$sql))
+           {
+
+             while ($obj=mysqli_fetch_object($result))
+               {
+                   $date = date("d-m h:i A", strtotime($obj->created_at));
+                   $messages [] = array('to' => $obj->to, 'subject' => $obj->subject, 'message' => $obj->message,
+                                    'date' => $date, 'id' => $obj->id);
+               }
+
+               return array('data' => $messages);
+         } else {
+           throw new RestException(401, "Error fetching data!");
+         }
+
+        }
 
 
 }

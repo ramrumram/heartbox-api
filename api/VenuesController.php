@@ -1,14 +1,31 @@
 <?php
 
 use \Jacwright\RestServer\RestException;
-
 include_once("MysqlClass.php");
 include_once("PestJSON.php");
 include_once("functions.php");
 
+
 class VenuesController extends DB
 {
 
+  /**
+    *
+    * @url POST /newlocation
+    */
+    public function newlocation() {
+      //venues/newlocation
+
+
+
+  $args = array(
+    'name' => 'Chris'
+    );
+    $time = time() + 10;
+
+    ResqueScheduler::enqueueAt($time, 'default', 'PushToDevice', $args);
+//    Resque::enqueue('default', 'PushToDevice', $args);
+    }
 
 
   /**
@@ -67,10 +84,10 @@ class VenuesController extends DB
     	// Retrieve and iterate over the list of all Users
 
 
-    	$locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&radius=5&categoryId=4d4b7104d754a06370d81259,4d4b7105d754a06374d81259,4d4b7105d754a06378d81259&v='.date('Ymd'));
+    	//$locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&radius=5&categoryId=4d4b7104d754a06370d81259,4d4b7105d754a06374d81259,4d4b7105d754a06378d81259&v='.date('Ymd'));
 
       //testing url to allow all venues
-    //  $locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&v='.date('Ymd'));
+      $locs = $pest->get('/v2/venues/search?ll='.$ll.'&client_id=MNGNKO0QUJK2534VZKPGF5YD1NUW0AZM0F1YFJHIANYBAVJH&client_secret=2TIP4IONOYKBBTPYA1FGFARLY0JCVDCJIK3L1RG1N2NPJ21E&v='.date('Ymd'));
 
       if ($locs['response']['venues']) {
 

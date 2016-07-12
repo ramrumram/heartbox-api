@@ -44,7 +44,9 @@ class TestController extends DB
       extract($_POST);
       $email = trim($email);
       $password = trim($password);
-  	 $sql = 'select id, background_status from users where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
+    	 $sql = 'select id, background_status, no_of_sug from users left join suggestions
+              on users.id = suggestions.uid
+              where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
 
   	if ($result=mysqli_query($this->link,$sql))
   	  {
@@ -52,9 +54,10 @@ class TestController extends DB
     	  if ($obj=mysqli_fetch_object($result))
 
     	    {
-              return array("uid" => $obj->id, "background_status" => $obj->background_status);
+              $obj->no_of_sug = $obj->no_of_sug + 0;
+              return array("uid" => $obj->id, "background_status" => $obj->background_status, "no_of_sug" => "$obj->no_of_sug");
     	    } else {
-            
+
             throw new RestException(401, "Wrong credentials!");
           }
 
