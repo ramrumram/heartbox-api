@@ -35,7 +35,7 @@ class MessagesController extends DB
   );
 
   //  $from = 'App user <'.$obj->email.'>';
-    $from = 'Heartboxx App user <from@sparkpostbox.com>';
+    $from = 'Heartboxx App user <from@app.johncheck.com>';
 
     $subject = ($subject)?$subject:"no subject";
     $body = $message;
