@@ -22,10 +22,11 @@ class TestController extends DB
      *
      * @url POST /log
      */
-    public function log()
+    public function log2($desc)
     {
 
-       $sql = 'INSERT INTO log (description) VALUES ("'.$_POST['description'].'");';
+      //$_POST['description']
+       $sql = 'INSERT INTO log (description) VALUES ("'.$desc.'");';
       if(mysqli_query($this->link,$sql)) {
         return array("success" => "data saved");
       }else {
@@ -40,6 +41,7 @@ class TestController extends DB
      */
     public function login()
     {
+
       //params email,password
       extract($_POST);
       $email = trim($email);
@@ -47,6 +49,11 @@ class TestController extends DB
     	 $sql = 'select id, background_status, no_of_sug from users left join suggestions
               on users.id = suggestions.uid
               where `email` = "'.$email.'" and `password` = "'.md5($password).'"';
+
+          //    $fp = fopen('/var/www/log.txt', 'w');
+          //    fwrite($fp, $sql);
+
+
 
   	if ($result=mysqli_query($this->link,$sql))
   	  {
@@ -130,7 +137,7 @@ class TestController extends DB
               );
 
               //  $from = 'App user <'.$obj->email.'>';
-                $from = 'App user <from@sparkpostbox.com>';
+                $from = ' Heartboxx <from@heartboxx.com>';
 
                 $subject = "Reset password";
                 $body = "Your temporary password for Heartboxx has been set as ".$rand;
@@ -148,7 +155,7 @@ class TestController extends DB
 
 
     	    } else {
-              return array("status" => "Email does not exists!");
+              return array("status" => "Email does not exist");
             //throw new RestException(401, "Email does not exists!");
           }
 

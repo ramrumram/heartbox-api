@@ -35,7 +35,7 @@ class MessagesController extends DB
   );
 
   //  $from = 'App user <'.$obj->email.'>';
-    $from = 'Heartboxx App user <from@app.johncheck.com>';
+    $from = 'Heartboxx App user <from@heartboxx.com>';
 
     $subject = ($subject)?$subject:"no subject";
     $body = $message;
@@ -101,7 +101,7 @@ class MessagesController extends DB
         {
           //params uid, to, subject , message
 
-          $sql = 'select * from messages where `from_uid` = "'.$uid.'" ORDER BY created_at DESC';
+          $sql = 'select * from messages where `from_uid` = "'.$uid.'" ORDER BY created_at DESC LIMIT 30';
 
           if ($result=mysqli_query($this->link,$sql))
            {

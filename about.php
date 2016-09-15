@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Agency - Start Bootstrap Theme</title>
+    <title>ABOUT HEARTBOXX</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,11 +38,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-muted">
-                    <h4 class="section-heading">About Us
+                    <h4 class="section-heading">ABOUT HEARTBOXX
 </h4>
                  
                     <p class="text-muted">
-                      Foursquare is a technology company that uses location intelligence to build meaningful consumer experiences and business solutions. We have two mobile apps: Foursquare and Swarm, and a suite of enterprise and advertising tools.
+                      Heartboxx is a conduit for neighborhood customers and business owners to communicate ways to improve their experience by encouraging heartfelt suggestions directly to business owners so that community input can be heard quickly and owner attention accessed kindly, creating a stronger community and a better neighborhood experience.
 
 </p>
 
